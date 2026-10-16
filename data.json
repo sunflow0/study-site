@@ -1,241 +1,241 @@
 {
- "English": {
-  "vocab": {
-   "Academic": [
-    {
-     "w": "significant",
-     "pos": "adj.",
-     "th": "สำคัญ, มีนัยสำคัญ",
-     "ex": "There was a significant increase in sales."
+  "English": {
+    "vocab": {
+      "Academic": [
+        {
+          "w": "significant",
+          "pos": "adj.",
+          "th": "สำคัญ, มีนัยสำคัญ",
+          "ex": "There was a significant increase in sales."
+        },
+        {
+          "w": "mitigate",
+          "pos": "v.",
+          "th": "บรรเทา",
+          "ex": "Trees help mitigate the effects of heat."
+        },
+        {
+          "w": "detrimental",
+          "pos": "adj.",
+          "th": "เป็นอันตราย, ส่งผลเสีย",
+          "ex": "Stress is detrimental to health."
+        },
+        {
+          "w": "inevitable",
+          "pos": "adj.",
+          "th": "หลีกเลี่ยงไม่ได้",
+          "ex": "Change is inevitable."
+        }
+      ],
+      "Daily life": [
+        {
+          "w": "commute",
+          "pos": "v./n.",
+          "th": "เดินทางไปทำงาน/เรียน",
+          "ex": "I commute by train every day."
+        },
+        {
+          "w": "grocery",
+          "pos": "n.",
+          "th": "ของชำ",
+          "ex": "I bought some groceries."
+        },
+        {
+          "w": "neighbourhood",
+          "pos": "n.",
+          "th": "ละแวกบ้าน",
+          "ex": "It is a quiet neighbourhood."
+        }
+      ],
+      "Business (TOEIC)": [
+        {
+          "w": "deadline",
+          "pos": "n.",
+          "th": "กำหนดส่งงาน",
+          "ex": "We must meet the deadline."
+        },
+        {
+          "w": "invoice",
+          "pos": "n.",
+          "th": "ใบแจ้งหนี้",
+          "ex": "Please send the invoice by Friday."
+        },
+        {
+          "w": "reschedule",
+          "pos": "v.",
+          "th": "เลื่อนนัด",
+          "ex": "Can we reschedule the meeting?"
+        }
+      ]
     },
-    {
-     "w": "mitigate",
-     "pos": "v.",
-     "th": "บรรเทา",
-     "ex": "Trees help mitigate the effects of heat."
-    },
-    {
-     "w": "detrimental",
-     "pos": "adj.",
-     "th": "เป็นอันตราย, ส่งผลเสีย",
-     "ex": "Stress is detrimental to health."
-    },
-    {
-     "w": "inevitable",
-     "pos": "adj.",
-     "th": "หลีกเลี่ยงไม่ได้",
-     "ex": "Change is inevitable."
+    "grammar": {
+      "IELTS": [
+        {
+          "t": "Second Conditional",
+          "f": "If + Past Simple, would + V1",
+          "ex": [
+            "If I won the lottery, I would travel."
+          ],
+          "mis": "✗ If I would win → ✓ If I won"
+        },
+        {
+          "t": "Relative Clause",
+          "f": "noun + who/which/that + clause",
+          "ex": [
+            "The book that I read was great."
+          ],
+          "mis": "✗ The man who he lives → ✓ The man who lives"
+        },
+        {
+          "t": "Passive Voice",
+          "f": "be + V3",
+          "ex": [
+            "The report was written by Tom."
+          ],
+          "mis": "ใช้เมื่อสนใจสิ่งที่ถูกกระทำมากกว่าคนทำ"
+        }
+      ],
+      "TOEIC": [
+        {
+          "t": "Subject-Verb Agreement",
+          "f": "singular subject + V-s / plural subject + V",
+          "ex": [
+            "The manager approves the plan.",
+            "The managers approve the plan."
+          ],
+          "mis": "✗ The list of items are → ✓ The list of items is"
+        },
+        {
+          "t": "Part of Speech",
+          "f": "adj. + noun / adv. + verb",
+          "ex": [
+            "a successful project",
+            "carefully review"
+          ],
+          "mis": "✗ a success project → ✓ a successful project"
+        }
+      ]
     }
-   ],
-   "Daily life": [
-    {
-     "w": "commute",
-     "pos": "v./n.",
-     "th": "เดินทางไปทำงาน/เรียน",
-     "ex": "I commute by train every day."
-    },
-    {
-     "w": "grocery",
-     "pos": "n.",
-     "th": "ของชำ",
-     "ex": "I bought some groceries."
-    },
-    {
-     "w": "neighbourhood",
-     "pos": "n.",
-     "th": "ละแวกบ้าน",
-     "ex": "It is a quiet neighbourhood."
-    }
-   ],
-   "Business (TOEIC)": [
-    {
-     "w": "deadline",
-     "pos": "n.",
-     "th": "กำหนดส่งงาน",
-     "ex": "We must meet the deadline."
-    },
-    {
-     "w": "invoice",
-     "pos": "n.",
-     "th": "ใบแจ้งหนี้",
-     "ex": "Please send the invoice by Friday."
-    },
-    {
-     "w": "reschedule",
-     "pos": "v.",
-     "th": "เลื่อนนัด",
-     "ex": "Can we reschedule the meeting?"
-    }
-   ]
   },
-  "grammar": {
-   "IELTS": [
-    {
-     "t": "Second Conditional",
-     "f": "If + Past Simple, would + V1",
-     "ex": [
-      "If I won the lottery, I would travel."
-     ],
-     "mis": "✗ If I would win → ✓ If I won"
+  "中文": {
+    "vocab": {
+      "HSK 1": [
+        {
+          "w": "你好",
+          "py": "nǐ hǎo",
+          "pos": "phr.",
+          "th": "สวัสดี",
+          "ex": "你好，我叫小明。"
+        },
+        {
+          "w": "谢谢",
+          "py": "xièxie",
+          "pos": "v.",
+          "th": "ขอบคุณ",
+          "ex": "谢谢你的帮助。"
+        },
+        {
+          "w": "学生",
+          "py": "xuésheng",
+          "pos": "n.",
+          "th": "นักเรียน",
+          "ex": "我是学生。"
+        }
+      ],
+      "HSK 2": [
+        {
+          "w": "便宜",
+          "py": "piányi",
+          "pos": "adj.",
+          "th": "ราคาถูก",
+          "ex": "这个很便宜。"
+        },
+        {
+          "w": "告诉",
+          "py": "gàosu",
+          "pos": "v.",
+          "th": "บอก",
+          "ex": "请告诉我时间。"
+        },
+        {
+          "w": "已经",
+          "py": "yǐjīng",
+          "pos": "adv.",
+          "th": "แล้ว, เรียบร้อยแล้ว",
+          "ex": "我已经吃饭了。"
+        }
+      ],
+      "HSK 3": [
+        {
+          "w": "帮助",
+          "py": "bāngzhù",
+          "pos": "v./n.",
+          "th": "ช่วยเหลือ",
+          "ex": "谢谢你帮助我。"
+        },
+        {
+          "w": "决定",
+          "py": "juédìng",
+          "pos": "v.",
+          "th": "ตัดสินใจ",
+          "ex": "我决定去北京。"
+        },
+        {
+          "w": "关于",
+          "py": "guānyú",
+          "pos": "prep.",
+          "th": "เกี่ยวกับ",
+          "ex": "这是关于学习的书。"
+        }
+      ]
     },
-    {
-     "t": "Relative Clause",
-     "f": "noun + who/which/that + clause",
-     "ex": [
-      "The book that I read was great."
-     ],
-     "mis": "✗ The man who he lives → ✓ The man who lives"
-    },
-    {
-     "t": "Passive Voice",
-     "f": "be + V3",
-     "ex": [
-      "The report was written by Tom."
-     ],
-     "mis": "ใช้เมื่อสนใจสิ่งที่ถูกกระทำมากกว่าคนทำ"
+    "grammar": {
+      "HSK 1": [
+        {
+          "t": "ประโยค 是",
+          "f": "A 是 B",
+          "ex": [
+            "我是老师。(wǒ shì lǎoshī)"
+          ],
+          "mis": "ใช้ 是 กับคำนาม ไม่ใช้กับคำคุณศัพท์ (✗ 我是高 → ✓ 我很高)"
+        },
+        {
+          "t": "คำถาม 吗",
+          "f": "ประโยคบอกเล่า + 吗？",
+          "ex": [
+            "你喝茶吗？(nǐ hē chá ma)"
+          ],
+          "mis": "ไม่ต้องสลับตำแหน่งคำเหมือนภาษาอังกฤษ"
+        }
+      ],
+      "HSK 2": [
+        {
+          "t": "ประโยค 了 (เกิดขึ้นแล้ว)",
+          "f": "Subj + V + 了",
+          "ex": [
+            "我吃了饭。(wǒ chī le fàn)"
+          ],
+          "mis": "了 ไม่ได้แปลว่าอดีตเสมอ แต่บอกว่าการกระทำสำเร็จ"
+        },
+        {
+          "t": "เปรียบเทียบด้วย 比",
+          "f": "A 比 B + adj.",
+          "ex": [
+            "他比我高。(tā bǐ wǒ gāo)"
+          ],
+          "mis": "✗ 他比我很高 → ✓ 他比我高 (ห้ามใส่ 很)"
+        }
+      ],
+      "HSK 3": [
+        {
+          "t": "ประโยค 把",
+          "f": "Subj + 把 + O + V + ผลลัพธ์",
+          "ex": [
+            "请把门关上。(qǐng bǎ mén guānshang)"
+          ],
+          "mis": "กรรมต้องเป็นสิ่งที่ระบุชัดเจน และกริยาต้องมีผลลัพธ์ต่อท้าย"
+        }
+      ]
     }
-   ],
-   "TOEIC": [
-    {
-     "t": "Subject-Verb Agreement",
-     "f": "singular subject + V-s / plural subject + V",
-     "ex": [
-      "The manager approves the plan.",
-      "The managers approve the plan."
-     ],
-     "mis": "✗ The list of items are → ✓ The list of items is"
-    },
-    {
-     "t": "Part of Speech",
-     "f": "adj. + noun / adv. + verb",
-     "ex": [
-      "a successful project",
-      "carefully review"
-     ],
-     "mis": "✗ a success project → ✓ a successful project"
-    }
-   ]
   }
- },
- "中文": {
-  "vocab": {
-   "HSK 1": [
-    {
-     "w": "你好",
-     "py": "nǐ hǎo",
-     "pos": "phr.",
-     "th": "สวัสดี",
-     "ex": "你好，我叫小明。"
-    },
-    {
-     "w": "谢谢",
-     "py": "xièxie",
-     "pos": "v.",
-     "th": "ขอบคุณ",
-     "ex": "谢谢你的帮助。"
-    },
-    {
-     "w": "学生",
-     "py": "xuésheng",
-     "pos": "n.",
-     "th": "นักเรียน",
-     "ex": "我是学生。"
-    }
-   ],
-   "HSK 2": [
-    {
-     "w": "便宜",
-     "py": "piányi",
-     "pos": "adj.",
-     "th": "ราคาถูก",
-     "ex": "这个很便宜。"
-    },
-    {
-     "w": "告诉",
-     "py": "gàosu",
-     "pos": "v.",
-     "th": "บอก",
-     "ex": "请告诉我时间。"
-    },
-    {
-     "w": "已经",
-     "py": "yǐjīng",
-     "pos": "adv.",
-     "th": "แล้ว, เรียบร้อยแล้ว",
-     "ex": "我已经吃饭了。"
-    }
-   ],
-   "HSK 3": [
-    {
-     "w": "帮助",
-     "py": "bāngzhù",
-     "pos": "v./n.",
-     "th": "ช่วยเหลือ",
-     "ex": "谢谢你帮助我。"
-    },
-    {
-     "w": "决定",
-     "py": "juédìng",
-     "pos": "v.",
-     "th": "ตัดสินใจ",
-     "ex": "我决定去北京。"
-    },
-    {
-     "w": "关于",
-     "py": "guānyú",
-     "pos": "prep.",
-     "th": "เกี่ยวกับ",
-     "ex": "这是关于学习的书。"
-    }
-   ]
-  },
-  "grammar": {
-   "HSK 1": [
-    {
-     "t": "ประโยค 是",
-     "f": "A 是 B",
-     "ex": [
-      "我是老师。(wǒ shì lǎoshī)"
-     ],
-     "mis": "ใช้ 是 กับคำนาม ไม่ใช้กับคำคุณศัพท์ (✗ 我是高 → ✓ 我很高)"
-    },
-    {
-     "t": "คำถาม 吗",
-     "f": "ประโยคบอกเล่า + 吗？",
-     "ex": [
-      "你喝茶吗？(nǐ hē chá ma)"
-     ],
-     "mis": "ไม่ต้องสลับตำแหน่งคำเหมือนภาษาอังกฤษ"
-    }
-   ],
-   "HSK 2": [
-    {
-     "t": "ประโยค 了 (เกิดขึ้นแล้ว)",
-     "f": "Subj + V + 了",
-     "ex": [
-      "我吃了饭。(wǒ chī le fàn)"
-     ],
-     "mis": "了 ไม่ได้แปลว่าอดีตเสมอ แต่บอกว่าการกระทำสำเร็จ"
-    },
-    {
-     "t": "เปรียบเทียบด้วย 比",
-     "f": "A 比 B + adj.",
-     "ex": [
-      "他比我高。(tā bǐ wǒ gāo)"
-     ],
-     "mis": "✗ 他比我很高 → ✓ 他比我高 (ห้ามใส่ 很)"
-    }
-   ],
-   "HSK 3": [
-    {
-     "t": "ประโยค 把",
-     "f": "Subj + 把 + O + V + ผลลัพธ์",
-     "ex": [
-      "请把门关上。(qǐng bǎ mén guānshang)"
-     ],
-     "mis": "กรรมต้องเป็นสิ่งที่ระบุชัดเจน และกริยาต้องมีผลลัพธ์ต่อท้าย"
-    }
-   ]
-  }
- }
 }
