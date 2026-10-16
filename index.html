@@ -109,7 +109,6 @@ async function loadHskData(){
     }
     if(!D['中文'])throw new Error('Chinese section missing');
     D['中文'].vocab=vocab;
-    $('msg').innerHTML='โหลดคำศัพท์ HSK 3.0 ระดับ 1–5 แล้ว · ความหมายภาษาอังกฤษและข้อมูลคำศัพท์จาก <a href="https://github.com/ivankra/hsk30" target="_blank" rel="noopener">hsk30</a> และ <a href="https://github.com/saymei/zhongdex" target="_blank" rel="noopener">Zhongdex / CC-CEDICT</a> (CC BY-SA 4.0)';
     if(lang==='中文'){query='';$('search').value='';setLang('中文')}
   }catch(err){
     $('msg').textContent='โหลดคลังคำศัพท์ออนไลน์ไม่สำเร็จ จึงแสดงคำศัพท์ตัวอย่างที่อยู่ใน data.json แทน กรุณาเปิดเว็บโดยเชื่อมต่ออินเทอร์เน็ตแล้วลองรีเฟรช';
