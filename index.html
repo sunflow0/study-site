@@ -81,7 +81,7 @@ function parseCSV(text){
 function normalizePy(s){return String(s||'').replace(/\s+/g,'').toLowerCase()}
 async function loadHskData(){
   try{
-    $('msg').textContent='กำลังโหลดคลังคำศัพท์ HSK 3.0 ระดับ 1–5…';
+    $('msg').textContent='';
     const [csvResponse,glossResponse]=await Promise.all([
       fetch('https://raw.githubusercontent.com/ivankra/hsk30/master/hsk30.csv'),
       fetch('https://raw.githubusercontent.com/saymei/zhongdex/main/data/hsk_bands.json')
