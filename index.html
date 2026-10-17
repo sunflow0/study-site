@@ -109,100 +109,39 @@ const $=id=>document.getElementById(id);
 if(innerWidth>640)document.body.classList.remove('closed');
 $('menu').onclick=()=>document.body.classList.toggle('closed');
 const shut=()=>{if(innerWidth<=640)document.body.classList.add('closed')};
-fetch('data.json')
-  .then(r => r.json())
-  .then(async d => {
-    D = d;
-
-    try {
-      const response = await fetch('hsk3_thai.json');
-      if (!response.ok) throw new Error('โหลด hsk3_thai.json ไม่สำเร็จ');
-
-      const thaiData = await response.json();
-
-      // เพิ่มหมวดคำศัพท์ภาษาไทย โดยไม่ทับ data.json เดิม
-      if (!D['中文']) D['中文'] = { vocab: {}, grammar: {} };
-      if (!D['中文'].vocab) D['中文'].vocab = {};
-
-      for (const [category, words] of Object.entries(thaiData)) {
-        D['中文'].vocab[category] = words.map(item => ({
-          w: item.w || '',
-          py: item.py || '',
-          pos: item.pos || '—',
-          th: item.th || '',
-          en: item.en || '',
-          ex: item.ex || ''
-        }));
-      }
-    } catch (error) {
-      console.error(error);
-      $('msg').textContent = 'โหลด hsk3_thai.json ไม่สำเร็จ';
-    }
-
-    setLang(Object.keys(D)[0]);
-  })
-  .catch(() => {
-    $('msg').textContent = 'โหลด data.json ไม่ได้';
-  });.catch(()=>$('msg').textContent='โหลด data.json ไม่ได้ (ต้องเปิดผ่านเว็บ เช่น Netlify ไม่ใช่เปิดไฟล์ตรงๆ)');
-
 const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-function parseCSV(text){
-  const rows=[]; let row=[],field='',quoted=false;
-  for(let i=0;i<text.length;i++){
-    const ch=text[i];
-    if(ch==='"'){
-      if(quoted && text[i+1]==='"'){field+='"';i++}
-      else quoted=!quoted;
-    }else if(ch===','&&!quoted){row.push(field);field=''}
-    else if((ch==='\n'||ch==='\r')&&!quoted){
-      if(ch==='\r'&&text[i+1]==='\\n')i++;
-      row.push(field);field='';
-      if(row.some(v=>v!==''))rows.push(row);
-      row=[];
-    }else field+=ch;
-  }
-  if(field!==''||row.length){row.push(field);rows.push(row)}
-  const headers=rows.shift()||[];
-  return rows.map(r=>Object.fromEntries(headers.map((h,i)=>[h,r[i]??''])));
+
+function setLang(l) {
+  lang = l;
+
+  const vocabData = D[l].vocab || {};
+  const grammarData = D[l].grammar || {};
+
+  lv = Object.keys(vocabData)[0] || '';
+  pt = Object.keys(grammarData)[0] || '';
+  i = 0;
+
+  $('ttl').textContent = '💙 ' + l;
+
+  chips('lg', D, () => lang, k => {
+    setLang(k);
+    shut();
+  });
+
+  chips('lv', vocabData, () => lv, v => {
+    lv = v;
+    i = 0;
+    vocab();
+  });
+
+  chips('pt', grammarData, () => pt, v => {
+    pt = v;
+    grammar();
+  });
+
+  vocab();
+  grammar();
 }
-function normalizePy(s){return String(s||'').replace(/\s+/g,'').toLowerCase()}
-async function loadHskData(){
-  try{
-    $('msg').textContent='';
-    const [csvResponse,glossResponse]=await Promise.all([
-      fetch('https://raw.githubusercontent.com/ivankra/hsk30/master/hsk30.csv'),
-      fetch('https://raw.githubusercontent.com/saymei/zhongdex/main/data/hsk_bands.json')
-    ]);
-    if(!csvResponse.ok||!glossResponse.ok)throw new Error('source unavailable');
-    const [csvText,glossRows]=await Promise.all([csvResponse.text(),glossResponse.json()]);
-    const byKey=new Map(),byWord=new Map();
-    for(const item of glossRows){
-      const word=String(item.simplified||'').split('|')[0].trim();
-      if(!word)continue;
-      const py=normalizePy(item.pinyin?.marked||'');
-      if(py)byKey.set(word+'|'+py,item);
-      if(!byWord.has(word))byWord.set(word,item);
-    }
-    const sourceRows=parseCSV(csvText);
-    const vocab={};
-    for(let level=1;level<=5;level++){
-      vocab['HSK '+level]=sourceRows.filter(r=>Number(r.Level)===level).map(r=>{
-        const w=String(r.Simplified||'').split('|')[0].trim();
-        const py=String(r.Pinyin||'').split('|')[0].trim();
-        const gloss=byKey.get(w+'|'+normalizePy(py))||byWord.get(w);
-        const meanings=(gloss?.definitions||[]).map(d=>d?.text).filter(Boolean);
-        return {w,py,pos:String(r.POS||'—').replaceAll('/',' / '),th:'',en:[...new Set(meanings)].slice(0,3).join('; '),ex:''};
-      });
-    }
-    if(!D['中文'])throw new Error('Chinese section missing');
-    D['中文'].vocab=vocab;
-    if(lang==='中文'){query='';$('search').value='';setLang('中文')}
-  }catch(err){
-    $('msg').textContent='โหลดคลังคำศัพท์ออนไลน์ไม่สำเร็จ จึงแสดงคำศัพท์ตัวอย่างที่อยู่ใน data.json แทน กรุณาเปิดเว็บโดยเชื่อมต่ออินเทอร์เน็ตแล้วลองรีเฟรช';
-  }
-}
-function setLang(l){lang=l;lv=Object.keys(D[l].vocab)[0];pt=Object.keys(D[l].grammar)[0];i=0;$('ttl').textContent='💙 '+l;
-chips('lg',D,()=>lang,k=>{setLang(k);shut()});chips('lv',D[l].vocab,()=>lv,v=>{lv=v;i=0;vocab()});chips('pt',D[l].grammar,()=>pt,v=>{pt=v;grammar()});vocab();grammar()}
 function chips(id,obj,get,set){const el=$(id);el.innerHTML='';Object.keys(obj).forEach(k=>{const b=document.createElement('button');b.textContent=k;b.className=get()===k?'on':'';b.onclick=()=>{set(k);if(id!=='lg')chips(id,obj,get,set)};el.append(b)})}
 function vocab(){
 const all=D[lang].vocab[lv];
