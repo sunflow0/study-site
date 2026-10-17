@@ -220,5 +220,56 @@ $('kn').onclick=()=>{known[k]=!known[k];try{localStorage.setItem('known',JSON.st
 function grammar(){$('gbody').innerHTML=D[lang].grammar[pt].map(g=>`<details><summary>${g.t}</summary><div class="f">${g.f}</div>${g.ex.map(e=>`<div>• ${e}</div>`).join('')}<div class="mis">⚠️ ${g.mis}</div></details>`).join('')}
 function show(v){$('vocab').classList.toggle('hide',!v);$('grammar').classList.toggle('hide',v);$('tv').className=v?'on':'';$('tg').className=v?'':'on';shut()}
 $('search').addEventListener('input',e=>{query=e.target.value;i=0;vocab()});
+
+async function loadThaiVocabulary() {
+  try {
+    const [mainResponse, thaiResponse] = await Promise.all([
+      fetch('data.json', { cache: 'no-cache' }),
+      fetch('hsk3_thai.json', { cache: 'no-cache' })
+    ]);
+
+    if (!mainResponse.ok) throw new Error('โหลด data.json ไม่สำเร็จ');
+    if (!thaiResponse.ok) throw new Error('โหลด hsk3_thai.json ไม่สำเร็จ');
+
+    D = await mainResponse.json();
+    const thaiData = await thaiResponse.json();
+
+    // ใช้ภาษาที่มีอยู่แล้ว ไม่สร้างภาษาใหม่โดยไม่จำเป็น
+    const targetLang = Object.keys(D).find(
+      key => D[key] && D[key].vocab
+    );
+
+    if (!targetLang) throw new Error('ไม่พบหมวด Vocab ใน data.json');
+
+    let total = 0;
+
+    for (const [category, words] of Object.entries(thaiData)) {
+      if (!Array.isArray(words)) continue;
+
+      D[targetLang].vocab[category] = words.map(item => ({
+        w: item.w || '',
+        py: item.py || '',
+        pos: item.pos || '—',
+        th: item.th || '',
+        en: item.en || '',
+        ex: item.ex || ''
+      }));
+
+      total += words.length;
+    }
+
+    setLang(targetLang);
+
+    $('msg').textContent =
+      `โหลดคำศัพท์ ${total} รายการแล้ว 💙`;
+
+  } catch (error) {
+    console.error(error);
+    $('msg').textContent = 'เกิดข้อผิดพลาด: ' + error.message;
+  }
+}
+
+loadThaiVocabulary();
+
 $('tv').onclick=()=>show(true);$('tg').onclick=()=>show(false);
 </script></body></html>
