@@ -110,66 +110,66 @@ if(innerWidth>640)document.body.classList.remove('closed');
 $('menu').onclick=()=>document.body.classList.toggle('closed');
 const shut=()=>{if(innerWidth<=640)document.body.classList.add('closed')};
 const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+async function loadThaiVocabulary() {
+  try {
+    const [mainResponse, thaiResponse] = await Promise.all([
+      fetch('./data.json', { cache: 'no-cache' }),
+      fetch('./hsk3_thai.json', { cache: 'no-cache' })
+    ]);
 
-fetch('data.json')
-  .then(response => {
-    if (!response.ok) throw new Error('โหลด data.json ไม่สำเร็จ');
-    return response.json();
-  })
-  .then(async data => {
-    D = data;
-
-    try {
-      const response = await fetch('hsk3_thai.json', {
-        cache: 'no-cache'
-      });
-
-      if (!response.ok) {
-        throw new Error('หาไฟล์ hsk3_thai.json ไม่พบ');
-      }
-
-      const thaiData = await response.json();
-
-      // เพิ่มคำศัพท์ไทยโดยไม่ลบข้อมูลเดิม
-      if (!D['中文']) {
-        D['中文'] = { vocab: {}, grammar: {} };
-      }
-
-      if (!D['中文'].vocab) D['中文'].vocab = {};
-      if (!D['中文'].grammar) D['中文'].grammar = {};
-
-      let count = 0;
-
-      for (const [category, words] of Object.entries(thaiData)) {
-        if (!Array.isArray(words)) continue;
-
-        D['中文'].vocab[category] = words.map(item => ({
-          w: item.w || '',
-          py: item.py || '',
-          pos: item.pos || '—',
-          th: item.th || '',
-          en: item.en || '',
-          ex: item.ex || ''
-        }));
-
-        count += words.length;
-      }
-
-      $('msg').textContent =
-        `โหลดคำศัพท์พร้อมคำแปลไทยแล้ว ${count} รายการ 💙`;
-
-    } catch (error) {
-      console.error(error);
-      $('msg').textContent = error.message;
+    if (!mainResponse.ok) {
+      throw new Error('โหลด data.json ไม่สำเร็จ');
     }
 
-    setLang(Object.keys(D)[0]);
-  })
-  .catch(error => {
-    console.error(error);
-    $('msg').textContent = 'โหลดข้อมูลหลักไม่สำเร็จ: ' + error.message;
-  });
+    if (!thaiResponse.ok) {
+      throw new Error('โหลด hsk3_thai.json ไม่สำเร็จ');
+    }
 
+    D = await mainResponse.json();
+    const thaiData = await thaiResponse.json();
+
+    // ใช้ภาษาจีนที่มีอยู่ใน data.json
+    const targetLang = D['中文'] ? '中文' :
+      Object.keys(D).find(key => D[key]?.vocab);
+
+    if (!targetLang) {
+      throw new Error('ไม่พบข้อมูลภาษาใน data.json');
+    }
+
+    if (!D[targetLang].vocab) D[targetLang].vocab = {};
+    if (!D[targetLang].grammar) D[targetLang].grammar = {};
+
+    let total = 0;
+
+    for (const [category, words] of Object.entries(thaiData)) {
+      if (!Array.isArray(words)) continue;
+
+      D[targetLang].vocab[category] = words.map(item => ({
+        w: item.w || '',
+        py: item.py || '',
+        pos: item.pos || '—',
+        th: item.th || '',
+        en: item.en || '',
+        ex: item.ex || ''
+      }));
+
+      total += words.length;
+    }
+
+    if (total === 0) {
+      throw new Error('อ่านคำศัพท์จาก hsk3_thai.json ไม่ได้');
+    }
+
+    $('msg').textContent = `โหลดคำศัพท์ ${total} รายการแล้ว 💙`;
+    setLang(targetLang);
+
+  } catch (error) {
+    console.error(error);
+    $('msg').textContent = 'เกิดข้อผิดพลาด: ' + error.message;
+  }
+}
+
+loadThaiVocabulary();
 function setLang(l) {
   lang = l;
 
