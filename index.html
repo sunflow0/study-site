@@ -109,11 +109,41 @@ const $=id=>document.getElementById(id);
 if(innerWidth>640)document.body.classList.remove('closed');
 $('menu').onclick=()=>document.body.classList.toggle('closed');
 const shut=()=>{if(innerWidth<=640)document.body.classList.add('closed')};
-fetch('data.json').then(r=>r.json()).then(d=>{
-  D=d;
-  setLang(Object.keys(d)[0]);
-  loadHskData();
-}).catch(()=>$('msg').textContent='โหลด data.json ไม่ได้ (ต้องเปิดผ่านเว็บ เช่น Netlify ไม่ใช่เปิดไฟล์ตรงๆ)');
+fetch('data.json')
+  .then(r => r.json())
+  .then(async d => {
+    D = d;
+
+    try {
+      const response = await fetch('hsk3_thai.json');
+      if (!response.ok) throw new Error('โหลด hsk3_thai.json ไม่สำเร็จ');
+
+      const thaiData = await response.json();
+
+      // เพิ่มหมวดคำศัพท์ภาษาไทย โดยไม่ทับ data.json เดิม
+      if (!D['中文']) D['中文'] = { vocab: {}, grammar: {} };
+      if (!D['中文'].vocab) D['中文'].vocab = {};
+
+      for (const [category, words] of Object.entries(thaiData)) {
+        D['中文'].vocab[category] = words.map(item => ({
+          w: item.w || '',
+          py: item.py || '',
+          pos: item.pos || '—',
+          th: item.th || '',
+          en: item.en || '',
+          ex: item.ex || ''
+        }));
+      }
+    } catch (error) {
+      console.error(error);
+      $('msg').textContent = 'โหลด hsk3_thai.json ไม่สำเร็จ';
+    }
+
+    setLang(Object.keys(D)[0]);
+  })
+  .catch(() => {
+    $('msg').textContent = 'โหลด data.json ไม่ได้';
+  });.catch(()=>$('msg').textContent='โหลด data.json ไม่ได้ (ต้องเปิดผ่านเว็บ เช่น Netlify ไม่ใช่เปิดไฟล์ตรงๆ)');
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 function parseCSV(text){
