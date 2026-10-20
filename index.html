@@ -122,43 +122,58 @@ const shut = () => {
   if (innerWidth <= 640) document.body.classList.add('closed');
 };
 
+
 async function loadData() {
   try {
-    const [mainResponse, thaiResponse] = await Promise.all([
-      fetch('./data.json'),
-      fetch('./hsk3_thai.json')
-    ]);
+    const mainResponse = await fetch('./data.json');
 
-    if (!mainResponse.ok) throw new Error('โหลด data.json ไม่สำเร็จ');
-    if (!thaiResponse.ok) throw new Error('โหลด hsk3_thai.json ไม่สำเร็จ');
-
-    D = await mainResponse.json();
-    const thaiData = await thaiResponse.json();
-
-    // เพิ่มคำศัพท์ภาษาไทยจากไฟล์ใหม่ให้กับภาษาจีน
-    if (!D['中文']) {
-      throw new Error('ไม่พบ 中文 ใน data.json');
+    if (!mainResponse.ok) {
+      throw new Error('โหลด data.json ไม่สำเร็จ');
     }
 
-    if (!thaiData['中文']?.vocab) {
-      throw new Error('ไม่พบ 中文 → vocab ใน hsk3_thai.json');
+    D = await mainResponse.json();
+
+    if (!D['中文']) {
+      throw new Error('ไม่พบ 中文 ใน data.json');
     }
 
     D['中文'].vocab = D['中文'].vocab || {};
     D['中文'].grammar = D['中文'].grammar || {};
 
-    for (const [category, words] of Object.entries(thaiData['中文'].vocab)) {
-      if (!Array.isArray(words)) continue;
+    const files = [
+      { file: './hsk3_thai.json', levels: [1, 2, 3] },
+      { file: './hsk5.json', levels: [4, 5] }
+    ];
 
-      D['中文'].vocab[category] = words.map(item => ({
-        ...item,
-        w: item.w || '',
-        py: item.py || '',
-        pos: item.pos || '—',
-        th: item.th || '',
-        en: item.en || '',
-        ex: item.ex || ''
-      }));
+    for (const config of files) {
+      const response = await fetch(config.file);
+
+      if (!response.ok) {
+        throw new Error('โหลด ' + config.file + ' ไม่สำเร็จ');
+      }
+
+      const data = await response.json();
+      const source = data['中文']?.vocab || data.vocab || data;
+
+      for (const level of config.levels) {
+        const category = 'HSK ' + level;
+        const words = source[category];
+
+        if (!Array.isArray(words)) {
+          console.warn('ไม่พบหมวด ' + category + ' ใน ' + config.file);
+          continue;
+        }
+
+        D['中文'].vocab[category] = words.map(item => ({
+          ...item,
+          w: item.w || '',
+          py: item.py || '',
+          pos: item.pos || '—',
+          th: item.th || '',
+          en: item.en || '',
+          ex: item.ex || ''
+        }));
+      }
     }
 
     setLang(Object.keys(D)[0]);
