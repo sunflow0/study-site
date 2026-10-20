@@ -45,27 +45,208 @@ summary{font-weight:600;cursor:pointer}
 <section id="vocab"><div class="chips" id="lv"></div><div id="vbody"></div></section>
 <section id="grammar" class="hide"><div class="chips" id="pt"></div><div id="gbody"></div></section>
 </main>
+
 <script>
-let D,lang,lv,pt,i=0,known={};
-try{known=JSON.parse(localStorage.getItem('known')||'{}')}catch(e){}
-const $=id=>document.getElementById(id);
-if(innerWidth>640)document.body.classList.remove('closed');
-$('menu').onclick=()=>document.body.classList.toggle('closed');
-const shut=()=>{if(innerWidth<=640)document.body.classList.add('closed')};
-fetch('data.json').then(r=>r.json()).then(d=>{D=d;setLang(Object.keys(d)[0])})
-.catch(()=>$('msg').textContent='โหลด data.json ไม่ได้ (ต้องเปิดผ่านเว็บ เช่น Netlify ไม่ใช่เปิดไฟล์ตรงๆ)');
-function setLang(l){lang=l;lv=Object.keys(D[l].vocab)[0];pt=Object.keys(D[l].grammar)[0];i=0;$('ttl').textContent='💙 '+l;
-chips('lg',D,()=>lang,k=>{setLang(k);shut()});chips('lv',D[l].vocab,()=>lv,v=>{lv=v;i=0;vocab()});chips('pt',D[l].grammar,()=>pt,v=>{pt=v;grammar()});vocab();grammar()}
-function chips(id,obj,get,set){const el=$(id);el.innerHTML='';Object.keys(obj).forEach(k=>{const b=document.createElement('button');b.textContent=k;b.className=get()===k?'on':'';b.onclick=()=>{set(k);if(id!=='lg')chips(id,obj,get,set)};el.append(b)})}
-function vocab(){const L=D[lang].vocab[lv],c=L[i],k=lang+lv+c.w,n=L.filter(x=>known[lang+lv+x.w]).length;
-$('vbody').innerHTML=`<div class="sub" style="text-align:center">จำได้แล้ว ${n}/${L.length} · การ์ด ${i+1}/${L.length}</div>
-<div class="flip" id="fl"><div class="in"><div class="face"><div class="word">${c.w}</div><div class="sub">${c.py?c.py+' · ':''}${c.pos}</div></div><div class="face back"><div style="font-size:20px">${c.th}</div><div class="sub" style="margin-top:8px">${[c.en,c.ex].filter(Boolean).join('<br>')}</div></div></div></div>
-<div class="row"><button id="pv">◀</button><button id="kn" class="${known[k]?'on':''}">✓ จำได้</button><button id="nx">▶</button></div>`;
-$('fl').onclick=e=>e.currentTarget.classList.toggle('f');
-$('pv').onclick=()=>{i=(i-1+L.length)%L.length;vocab()};
-$('nx').onclick=()=>{i=(i+1)%L.length;vocab()};
-$('kn').onclick=()=>{known[k]=!known[k];try{localStorage.setItem('known',JSON.stringify(known))}catch(e){}vocab()}}
-function grammar(){$('gbody').innerHTML=D[lang].grammar[pt].map(g=>`<details><summary>${g.t}</summary><div class="f">${g.f}</div>${g.ex.map(e=>`<div>• ${e}</div>`).join('')}<div class="mis">⚠️ ${g.mis}</div></details>`).join('')}
-function show(v){$('vocab').classList.toggle('hide',!v);$('grammar').classList.toggle('hide',v);$('tv').className=v?'on':'';$('tg').className=v?'':'on';shut()}
-$('tv').onclick=()=>show(true);$('tg').onclick=()=>show(false);
+let D, lang, lv, pt, i = 0, known = {};
+
+try {
+  known = JSON.parse(localStorage.getItem('known') || '{}');
+} catch (e) {}
+
+const $ = id => document.getElementById(id);
+
+if (innerWidth > 640) {
+  document.body.classList.remove('closed');
+}
+
+$('menu').onclick = () => document.body.classList.toggle('closed');
+
+const shut = () => {
+  if (innerWidth <= 640) document.body.classList.add('closed');
+};
+
+async function loadData() {
+  try {
+    const [mainResponse, thaiResponse] = await Promise.all([
+      fetch('./data.json'),
+      fetch('./hsk3_thai.json')
+    ]);
+
+    if (!mainResponse.ok) throw new Error('โหลด data.json ไม่สำเร็จ');
+    if (!thaiResponse.ok) throw new Error('โหลด hsk3_thai.json ไม่สำเร็จ');
+
+    D = await mainResponse.json();
+    const thaiData = await thaiResponse.json();
+
+    // เพิ่มคำศัพท์ภาษาไทยจากไฟล์ใหม่ให้กับภาษาจีน
+    if (!D['中文']) {
+      throw new Error('ไม่พบ 中文 ใน data.json');
+    }
+
+    if (!thaiData['中文']?.vocab) {
+      throw new Error('ไม่พบ 中文 → vocab ใน hsk3_thai.json');
+    }
+
+    D['中文'].vocab = D['中文'].vocab || {};
+    D['中文'].grammar = D['中文'].grammar || {};
+
+    for (const [category, words] of Object.entries(thaiData['中文'].vocab)) {
+      if (!Array.isArray(words)) continue;
+
+      D['中文'].vocab[category] = words.map(item => ({
+        ...item,
+        w: item.w || '',
+        py: item.py || '',
+        pos: item.pos || '—',
+        th: item.th || '',
+        en: item.en || '',
+        ex: item.ex || ''
+      }));
+    }
+
+    setLang(Object.keys(D)[0]);
+    $('msg').textContent = 'โหลดข้อมูลคำศัพท์สำเร็จ 💙';
+
+  } catch (error) {
+    console.error(error);
+    $('msg').textContent = 'เกิดข้อผิดพลาด: ' + error.message;
+  }
+}
+
+function setLang(l) {
+  lang = l;
+  const vocabCategories = Object.keys(D[l].vocab || {});
+  const grammarCategories = Object.keys(D[l].grammar || {});
+
+  lv = vocabCategories[0];
+  pt = grammarCategories[0];
+  i = 0;
+
+  $('ttl').textContent = '💙 ' + l;
+
+  chips('lg', D, () => lang, k => {
+    setLang(k);
+    shut();
+  });
+
+  chips('lv', D[l].vocab || {}, () => lv, v => {
+    lv = v;
+    i = 0;
+    vocab();
+  });
+
+  chips('pt', D[l].grammar || {}, () => pt, v => {
+    pt = v;
+    grammar();
+  });
+
+  vocab();
+  grammar();
+}
+
+function chips(id, obj, get, set) {
+  const el = $(id);
+  el.innerHTML = '';
+
+  Object.keys(obj).forEach(k => {
+    const b = document.createElement('button');
+    b.textContent = k;
+    b.className = get() === k ? 'on' : '';
+    b.onclick = () => {
+      set(k);
+      if (id !== 'lg') chips(id, obj, get, set);
+    };
+    el.append(b);
+  });
+}
+
+function vocab() {
+  const categories = D[lang].vocab || {};
+  const L = categories[lv];
+
+  if (!L || !L.length) {
+    $('vbody').innerHTML = '<p style="text-align:center">ไม่มีคำศัพท์ในหมวดนี้</p>';
+    return;
+  }
+
+  if (i >= L.length) i = 0;
+
+  const c = L[i];
+  const k = lang + lv + c.w;
+  const n = L.filter(x => known[lang + lv + x.w]).length;
+
+  $('vbody').innerHTML = `
+    <div class="sub" style="text-align:center">
+      จำได้แล้ว ${n}/${L.length} · การ์ด ${i + 1}/${L.length}
+    </div>
+    <div class="flip" id="fl">
+      <div class="in">
+        <div class="face">
+          <div class="word">${c.w || ''}</div>
+          <div class="sub">${c.py ? c.py + ' · ' : ''}${c.pos || ''}</div>
+        </div>
+        <div class="face back">
+          <div style="font-size:20px;text-align:center;width:100%;overflow-wrap:anywhere">
+            ${c.th || ''}
+          </div>
+          <div class="sub" style="margin-top:8px;text-align:center;width:100%;overflow-wrap:anywhere">
+            ${[c.en, c.ex].filter(Boolean).join('<br>')}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <button id="pv">◀</button>
+      <button id="kn" class="${known[k] ? 'on' : ''}">✓ จำได้</button>
+      <button id="nx">▶</button>
+    </div>`;
+
+  $('fl').onclick = e => e.currentTarget.classList.toggle('f');
+  $('pv').onclick = () => {
+    i = (i - 1 + L.length) % L.length;
+    vocab();
+  };
+  $('nx').onclick = () => {
+    i = (i + 1) % L.length;
+    vocab();
+  };
+  $('kn').onclick = () => {
+    known[k] = !known[k];
+    try {
+      localStorage.setItem('known', JSON.stringify(known));
+    } catch (e) {}
+    vocab();
+  };
+}
+
+function grammar() {
+  const G = D[lang].grammar || {};
+  if (!pt || !G[pt]) {
+    $('gbody').innerHTML = '<p>ไม่มีข้อมูล Grammar ในหมวดนี้</p>';
+    return;
+  }
+
+  $('gbody').innerHTML = G[pt].map(g => `
+    <details>
+      <summary>${g.t || ''}</summary>
+      <div class="f">${g.f || ''}</div>
+      ${(g.ex || []).map(e => `<div>• ${e}</div>`).join('')}
+      <div class="mis">⚠️ ${g.mis || ''}</div>
+    </details>`).join('');
+}
+
+function show(v) {
+  $('vocab').classList.toggle('hide', !v);
+  $('grammar').classList.toggle('hide', v);
+  $('tv').className = v ? 'on' : '';
+  $('tg').className = v ? '' : 'on';
+  shut();
+}
+
+$('tv').onclick = () => show(true);
+$('tg').onclick = () => show(false);
+
+loadData();
+</script>
+
 </script></body></html>
