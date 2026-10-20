@@ -47,6 +47,49 @@ summary{font-weight:600;cursor:pointer}
   overflow-wrap: anywhere;
   word-break: normal;
 }
+
+/* ปรับพื้นที่แสดงคำศัพท์และคำแปล */
+#vocab,
+#vbody {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+#vbody {
+  margin: 0 auto;
+  padding: 0;
+}
+
+.flip {
+  width: 100%;
+  height: 220px;
+  margin: 14px auto;
+}
+
+.in,
+.face {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.face {
+  left: 0;
+  right: 0;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  overflow-wrap: anywhere;
+  padding: 20px;
+}
+
+.face.back > div {
+  max-width: 100%;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
 </style></head><body class="closed">
 <button id="menu" aria-label="menu">☰</button>
 <nav id="side">
