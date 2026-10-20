@@ -154,6 +154,10 @@ async function loadData() {
 
       const data = await response.json();
       const source = data['中文']?.vocab || data.vocab || data;
+      console.log('hsk5 data:', data);
+console.log('hsk5 source:', source);
+console.log('HSK 4:', source['HSK 4']);
+console.log('HSK 5:', source['HSK 5']);
 
       for (const level of config.levels) {
         const category = 'HSK ' + level;
