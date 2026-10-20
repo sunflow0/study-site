@@ -110,6 +110,7 @@ if(innerWidth>640)document.body.classList.remove('closed');
 $('menu').onclick=()=>document.body.classList.toggle('closed');
 const shut=()=>{if(innerWidth<=640)document.body.classList.add('closed')};
 const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+
 async function loadThaiVocabulary() {
   try {
     const [mainResponse, thaiResponse] = await Promise.all([
@@ -127,15 +128,52 @@ async function loadThaiVocabulary() {
 
     D = await mainResponse.json();
     const thaiData = await thaiResponse.json();
-
-    // ใช้ภาษาจีนที่มีอยู่ใน data.json
     const targetLang = '中文';
 
-if (!D[targetLang]) {
-  throw new Error('ไม่พบภาษา 中文 ใน data.json');
+    if (!D[targetLang]) {
+      throw new Error('ไม่พบภาษา 中文 ใน data.json');
+    }
+
+    if (!thaiData[targetLang]?.vocab) {
+      throw new Error('ไม่พบหมวด vocab ใน hsk3_thai.json');
+    }
+
+    if (!D[targetLang].vocab) D[targetLang].vocab = {};
+    if (!D[targetLang].grammar) D[targetLang].grammar = {};
+
+    let total = 0;
+
+    for (const [category, words] of Object.entries(
+      thaiData[targetLang].vocab
+    )) {
+      if (!Array.isArray(words)) continue;
+
+      D[targetLang].vocab[category] = words.map(item => ({
+        w: item.w || '',
+        py: item.py || '',
+        pos: item.pos || '—',
+        th: item.th || '',
+        en: item.en || '',
+        ex: item.ex || ''
+      }));
+
+      total += words.length;
+    }
+
+    if (total === 0) {
+      throw new Error('ไม่พบรายการคำศัพท์ในหมวดภาษาจีน');
+    }
+
+    $('msg').textContent = `โหลดคำศัพท์ ${total} รายการแล้ว 💙`;
+    setLang(targetLang);
+
+  } catch (error) {
+    console.error(error);
+    $('msg').textContent = 'เกิดข้อผิดพลาด: ' + error.message;
+  }
 }
 
-    if (!targetLang) {
+    loadThaiVocabulary();
       throw new Error('ไม่พบข้อมูลภาษาใน data.json');
     }
 
